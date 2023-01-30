@@ -1,2 +1,2 @@
-# textAPIproject
-A project that uses apis with translater and text text to speech.
+# APIproject
+A project that uses PokeApi to get pokemons for a PokeDex.
