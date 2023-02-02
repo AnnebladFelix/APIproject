@@ -4,9 +4,30 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" href="../dist/css/style.css">
+    <title>PokeInfo</title>
 </head>
 <body>
+    <article class="wrapper">
+        <h1>Pokemon</h1>
+        <section id="search-box">
+            <input type="text" id="search-bar" placeholder="Pokemon name or ID!">
+            <button id="search-btn">🔍</button>
+        </section>
+        <section id="menu">
+            <select name="types" id="types">
+                <option value=""></option>
+            </select>
+        </section>
+        <button id="pre-btn">‹ prev</button><button id="nxt-btn">next ›</button>
+        <section id="info-box">
+
+        </section>
+    </article>
     
+    <section id="card-box">
+
+    </section>
+    <script src="../dist/ts/script.js" defer></script>
 </body>
 </html>
