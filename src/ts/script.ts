@@ -18,8 +18,9 @@ let nxtBtn = <HTMLButtonElement> document.getElementById('nxt-btn')!;
 let preBtn = <HTMLButtonElement> document.getElementById('pre-btn')!;
 
 type pkmnTemplate = {
+    [x: string]: any;
     name: string,
-    id: string,
+    id: number,
     types: string,
     sprites:  { [key: string]: string }, // This type definition specifies that the sprites property is an object that maps strings to strings.
 }
@@ -89,8 +90,9 @@ function pkmnCard() {
     fetch(urlFirstGen)
     .then(response => response.json())
     .then(pokemons => {
-        const pokemon = pokemons.results;
-        console.log("🚀 ~ file: script.ts:93 ~ pkmnCard ~ pokemon", pokemon)
+        const pokemon: pkmnTemplate = pokemons.results;
+        console.log(pokemon)
+        pokemon.sort((a: number, b: number) => a - b);
         pokemon.map((poke: { url: RequestInfo | URL; }) => {
             fetch(poke.url)
             .then(response => response.json())
@@ -99,7 +101,11 @@ function pkmnCard() {
                 const title = document.createElement('h1');
                 title.innerText = pokemon.name;
                 document.body.appendChild(title);
-            
+                
+                const id = document.createElement('h2');
+                id.innerText = ('ID: ' + pokemon.id);
+                document.body.appendChild(id);
+
                 const img = document.createElement('img');
                 img.src = pokemon.sprites.front_default;
                 img.width = 96;
@@ -107,15 +113,19 @@ function pkmnCard() {
                 img.src = pokemon.sprites.front_default;
                 img.loading = "lazy";
                 document.body.appendChild(img);
-            
+                
                 const typeList = document.createElement('ul');
                 pokemon.types.forEach((typeInfo: { type: { name: string; }; }) => {
                   const typeItem = document.createElement('li');
                   typeItem.innerText = typeInfo.type.name;
                   typeList.appendChild(typeItem);
+
+                const pokeDiv = document.createElement('div');
+                pokeDiv.append(title, id, img, typeList);
+
                 });
                 document.body.appendChild(typeList);
-                
+                pokeCard.append(title, id, img, typeList);
             })
             .catch(error => {
                 console.error("error fetching pokemon" , error);
@@ -129,21 +139,21 @@ function pkmnCard() {
 }
     
 pkmnCard();
-async function displayPokemon(pokemonId: any) {
+async function displayPokemon(pokemonId: string | number) {
     try {
       const pokemonResponse = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`);
       const pokemon = await pokemonResponse.json();
-  
       const pokemonDetailsResponse = await fetch(pokemon.url);
       const pokemonDetails = await pokemonDetailsResponse.json();
-  
+      // We then make a GET request to the URL for each type of the pokemon, using Promise.all to wait for all of the requests to complete.
       const typeDetailsResponses = await Promise.all(pokemonDetails.types.map((type: { type: { url: RequestInfo | URL; }; }) => fetch(type.type.url)));
       const typeDetails = await Promise.all(typeDetailsResponses.map(res => res.json()));
-  
+      // Next, we create an h1 element with the name of the pokemon.
       const title = document.createElement('h1');
       title.innerText = pokemonDetails.name;
+      // We append the h1 element to the body of the document.
       document.body.appendChild(title);
-  
+      // We create an img element with the front default sprite of the pokemon.
       const img = document.createElement('img');
       img.width = 96;
       img.height = 96;
@@ -154,23 +164,24 @@ async function displayPokemon(pokemonId: any) {
       img.style.margin = "16px 0";
       img.src = pokemonDetails.sprites.front_default;
       img.loading = "lazy";
+      // We append the img element to the body of the document.
       document.body.appendChild(img);
   
+      // We create a ul element for the types of the pokemon.
       const typeList = document.createElement('ul');
+      // For each type, we create a li element with the name of the type and append it to the ul element.
       typeDetails.forEach(details => {
         const typeItem = document.createElement('li');
         typeItem.innerText = details.name;
         typeList.appendChild(typeItem);
       });
+      // We append the ul element to the body of the document.
       document.body.appendChild(typeList);
     } catch (error) {
+      // If an error occurs, we log it to the console.
       console.error(error);
     }
-  }
-  
-  
-
-
+}
 //meny med olika saker så som pokemon, item, berries, games, moves.
 // https://pokeapi.co/api/v2/ + menyChoise
 //function med functions i för att få upp det man väljer?
@@ -192,14 +203,13 @@ fetch(urlPkmtype)
                 .then(response => response.json())
                 .then(res => {
                     console.log(res);
+                    //console.log(pokeCard);
                     pokeCard.innerHTML = "";
-                    console.log(pokeCard);
                 })
             });
         });
     }
 );  
-
 
 //kolla upp promise all
 //inne i radiobutton ränsa innerhtml och ersätt med det nya

@@ -80,7 +80,8 @@ function pkmnCard() {
         .then(response => response.json())
         .then(pokemons => {
         const pokemon = pokemons.results;
-        console.log("🚀 ~ file: script.ts:93 ~ pkmnCard ~ pokemon", pokemon);
+        console.log(pokemon);
+        pokemon.sort((a, b) => a - b);
         pokemon.map((poke) => {
             fetch(poke.url)
                 .then(response => response.json())
@@ -88,6 +89,9 @@ function pkmnCard() {
                 const title = document.createElement('h1');
                 title.innerText = pokemon.name;
                 document.body.appendChild(title);
+                const id = document.createElement('h2');
+                id.innerText = ('ID: ' + pokemon.id);
+                document.body.appendChild(id);
                 const img = document.createElement('img');
                 img.src = pokemon.sprites.front_default;
                 img.width = 96;
@@ -100,8 +104,11 @@ function pkmnCard() {
                     const typeItem = document.createElement('li');
                     typeItem.innerText = typeInfo.type.name;
                     typeList.appendChild(typeItem);
+                    const pokeDiv = document.createElement('div');
+                    pokeDiv.append(title, id, img, typeList);
                 });
                 document.body.appendChild(typeList);
+                pokeCard.append(title, id, img, typeList);
             })
                 .catch(error => {
                 console.error("error fetching pokemon", error);
@@ -167,7 +174,6 @@ fetch(urlPkmtype)
                 .then(res => {
                 console.log(res);
                 pokeCard.innerHTML = "";
-                console.log(pokeCard);
             });
         });
     });
