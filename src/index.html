@@ -11,13 +11,11 @@
     <article class="wrapper">
         <h1>Pokemon</h1>
         <section id="search-box">
-            <input type="text" id="search-bar" placeholder="Pokemon name or ID!">
+            <input pattern="\'[0-9]\" id="search-bar" placeholder="Pokemon name or ID!">
             <button id="search-btn">🔍</button>
         </section>
-        <section id="menu">
-            <select name="types" id="types">
-                <option value=""></option>
-            </select>
+        <section id="pkmTypes">
+            <label><input class="poke-radio" type="radio" name="pkmnType" value="all"> all</label>
         </section>
         <button id="pre-btn">‹ prev</button><button id="nxt-btn">next ›</button>
         <section id="info-box">
@@ -26,7 +24,8 @@
     </article>
     
     <section id="card-box">
-
+        <p></p>
+        
     </section>
     <script src="../dist/ts/script.js" defer></script>
 </body>

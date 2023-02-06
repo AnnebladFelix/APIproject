@@ -8,20 +8,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const urlFirstGen = 'https://pokeapi.co/api/v2/pokemon?limit=151';
+const urlFirstGen = 'https://pokeapi.co/api/v2/pokemon?limit=151&generation=1';
 const urlPkmn = 'https://pokeapi.co/api/v2/pokemon/';
 const urlMny = 'https://pokeapi.co/api/v2/';
+const urlPkmtype = 'https://pokeapi.co/api/v2/type/';
 const searchBarInput = document.querySelector('#search-bar');
 const searchBtn = document.querySelector('#search-btn');
 let pokeinfo = document.querySelector('#info-box');
 let pokeCard = document.querySelector('#card-box');
+let pokeTypes = document.querySelector('#pkmTypes');
 let div1 = document.createElement('div');
 let info = document.createElement('p');
 let img = document.createElement('div');
 let pokeId = document.createElement('p');
 let nxtBtn = document.getElementById('nxt-btn');
 let preBtn = document.getElementById('pre-btn');
-let i = 0;
+let i = 1;
 nxtBtn.addEventListener('click', function (e) {
     e.preventDefault();
     pokeinfo.innerHTML = "";
@@ -61,31 +63,112 @@ function foo() {
 foo();
 searchBtn.addEventListener('click', (event) => __awaiter(void 0, void 0, void 0, function* () {
     event.preventDefault();
-    const response = yield fetch(urlPkmn + searchBarInput.value);
-    const data = yield response.json();
-    if (response.status === 404) {
-        alert('No Pokemon found!');
-    }
-    else {
+    try {
+        const response = yield fetch(urlPkmn + searchBarInput.value);
+        const data = yield response.json();
         pokeinfo.append(div1, info, pokeId, img);
         info.innerHTML = data.name;
         pokeId.innerHTML = ('id: ' + data.id);
         img.innerHTML = (`<img class="cover" src="${data.sprites['front_default']}">`);
     }
+    catch (error) {
+        alert('No Pokemon found!');
+    }
 }));
 function pkmnCard() {
-    return __awaiter(this, void 0, void 0, function* () {
-        for (let y = 1; y < 152; y++) {
-            const response = fetch(urlPkmn + y);
-            const data = yield (yield response).json();
-            let div2 = document.createElement('div');
-            let info2 = document.createElement('p');
-            info2.className = 'info2';
-            let img2 = document.createElement('div');
-            pokeCard.append(div2, info2, img2);
-            info2.innerHTML = data.name + '. id: ' + data.id;
-            img2.innerHTML = (`<img class="cover" src="${data.sprites['front_default']}">`);
-        }
+    fetch(urlFirstGen)
+        .then(response => response.json())
+        .then(pokemons => {
+        const pokemon = pokemons.results;
+        console.log("🚀 ~ file: script.ts:93 ~ pkmnCard ~ pokemon", pokemon);
+        pokemon.map((poke) => {
+            fetch(poke.url)
+                .then(response => response.json())
+                .then(pokemon => {
+                const title = document.createElement('h1');
+                title.innerText = pokemon.name;
+                document.body.appendChild(title);
+                const img = document.createElement('img');
+                img.src = pokemon.sprites.front_default;
+                img.width = 96;
+                img.height = 96;
+                img.src = pokemon.sprites.front_default;
+                img.loading = "lazy";
+                document.body.appendChild(img);
+                const typeList = document.createElement('ul');
+                pokemon.types.forEach((typeInfo) => {
+                    const typeItem = document.createElement('li');
+                    typeItem.innerText = typeInfo.type.name;
+                    typeList.appendChild(typeItem);
+                });
+                document.body.appendChild(typeList);
+            })
+                .catch(error => {
+                console.error("error fetching pokemon", error);
+            });
+        });
+    })
+        .catch(error => {
+        console.error("error fetching pokomen from generation 1", error);
     });
 }
 pkmnCard();
+function displayPokemon(pokemonId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const pokemonResponse = yield fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`);
+            const pokemon = yield pokemonResponse.json();
+            const pokemonDetailsResponse = yield fetch(pokemon.url);
+            const pokemonDetails = yield pokemonDetailsResponse.json();
+            const typeDetailsResponses = yield Promise.all(pokemonDetails.types.map((type) => fetch(type.type.url)));
+            const typeDetails = yield Promise.all(typeDetailsResponses.map(res => res.json()));
+            const title = document.createElement('h1');
+            title.innerText = pokemonDetails.name;
+            document.body.appendChild(title);
+            const img = document.createElement('img');
+            img.width = 96;
+            img.height = 96;
+            img.style.objectFit = "cover";
+            img.style.display = "block";
+            img.style.width = "100%";
+            img.style.height = "auto";
+            img.style.margin = "16px 0";
+            img.src = pokemonDetails.sprites.front_default;
+            img.loading = "lazy";
+            document.body.appendChild(img);
+            const typeList = document.createElement('ul');
+            typeDetails.forEach(details => {
+                const typeItem = document.createElement('li');
+                typeItem.innerText = details.name;
+                typeList.appendChild(typeItem);
+            });
+            document.body.appendChild(typeList);
+        }
+        catch (error) {
+            console.error(error);
+        }
+    });
+}
+fetch(urlPkmtype)
+    .then(response => response.json())
+    .then(data => {
+    data.results.map((type) => {
+        let lbl = document.createElement('label');
+        pokeTypes.append(lbl);
+        lbl.innerHTML = (`<input class="poke-radio" type="radio" name="pkmnType" value="${type.name}"> ${type.name}`);
+    });
+}).then(() => {
+    let pokeRadio = Array.from(document.querySelectorAll('.poke-radio'));
+    pokeRadio.forEach(radioButton => {
+        radioButton.addEventListener('change', (event) => {
+            const selectedPkmType = event.target.value;
+            fetch(urlPkmtype + selectedPkmType)
+                .then(response => response.json())
+                .then(res => {
+                console.log(res);
+                pokeCard.innerHTML = "";
+                console.log(pokeCard);
+            });
+        });
+    });
+});
