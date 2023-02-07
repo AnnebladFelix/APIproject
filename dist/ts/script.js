@@ -14,7 +14,7 @@ const urlMny = 'https://pokeapi.co/api/v2/';
 const urlPkmtype = 'https://pokeapi.co/api/v2/type/';
 const searchBarInput = document.querySelector('#search-bar');
 const searchBtn = document.querySelector('#search-btn');
-let pokeinfo = document.querySelector('#info-box');
+let pokeInfo = document.querySelector('#info-box');
 let pokeCard = document.querySelector('#card-box');
 let pokeTypes = document.querySelector('#pkmTypes');
 let div1 = document.createElement('div');
@@ -26,7 +26,7 @@ let preBtn = document.getElementById('pre-btn');
 let i = 1;
 nxtBtn.addEventListener('click', function (e) {
     e.preventDefault();
-    pokeinfo.innerHTML = "";
+    pokeInfo.innerHTML = "";
     i++;
     preBtn.disabled = false;
     foo();
@@ -39,7 +39,7 @@ nxtBtn.addEventListener('click', function (e) {
 });
 preBtn.addEventListener('click', function (e) {
     e.preventDefault();
-    pokeinfo.innerHTML = "";
+    pokeInfo.innerHTML = "";
     foo();
     nxtBtn.disabled = false;
     if (i <= 0) {
@@ -54,7 +54,7 @@ function foo() {
     return __awaiter(this, void 0, void 0, function* () {
         const response = yield fetch(urlPkmn + i);
         const data = yield response.json();
-        pokeinfo.append(div1, info, pokeId, img);
+        pokeInfo.append(div1, info, pokeId, img);
         info.innerHTML = data.name;
         pokeId.innerHTML = ('id: ' + data.id);
         img.innerHTML = (`<img class="cover" src="${data.sprites['front_default']}">`);
@@ -66,7 +66,7 @@ searchBtn.addEventListener('click', (event) => __awaiter(void 0, void 0, void 0,
     try {
         const response = yield fetch(urlPkmn + searchBarInput.value);
         const data = yield response.json();
-        pokeinfo.append(div1, info, pokeId, img);
+        pokeInfo.append(div1, info, pokeId, img);
         info.innerHTML = data.name;
         pokeId.innerHTML = ('id: ' + data.id);
         img.innerHTML = (`<img class="cover" src="${data.sprites['front_default']}">`);
@@ -81,18 +81,16 @@ function pkmnCard() {
         .then(pokemons => {
         const pokemon = pokemons.results;
         console.log(pokemon);
-        pokemon.sort((a, b) => a - b);
         pokemon.map((poke) => {
             fetch(poke.url)
                 .then(response => response.json())
                 .then(pokemon => {
                 const title = document.createElement('h1');
+                title.className = 'pkmnName';
                 title.innerText = pokemon.name;
                 document.body.appendChild(title);
-                const id = document.createElement('h2');
-                id.innerText = ('ID: ' + pokemon.id);
-                document.body.appendChild(id);
                 const img = document.createElement('img');
+                img.className = 'pkmImg';
                 img.src = pokemon.sprites.front_default;
                 img.width = 96;
                 img.height = 96;
@@ -100,15 +98,18 @@ function pkmnCard() {
                 img.loading = "lazy";
                 document.body.appendChild(img);
                 const typeList = document.createElement('ul');
+                typeList.className = 'typeList';
                 pokemon.types.forEach((typeInfo) => {
                     const typeItem = document.createElement('li');
                     typeItem.innerText = typeInfo.type.name;
                     typeList.appendChild(typeItem);
-                    const pokeDiv = document.createElement('div');
-                    pokeDiv.append(title, id, img, typeList);
                 });
                 document.body.appendChild(typeList);
-                pokeCard.append(title, id, img, typeList);
+                const pokeDiv = document.createElement('div');
+                pokeDiv.append(title, img, typeList);
+                document.body.appendChild(pokeDiv);
+                pokeDiv.className = "pokeDiv";
+                pokeCard.append(pokeDiv);
             })
                 .catch(error => {
                 console.error("error fetching pokemon", error);
@@ -156,6 +157,29 @@ function displayPokemon(pokemonId) {
         }
     });
 }
+function renderPokemonCard(pokemonData) {
+    let pokemonCard = document.createElement("div");
+    pokemonCard.classList.add("pokemon-card");
+    pokemonCard.className = "pokeDiv";
+    let pokemonName = document.createElement("h1");
+    pokemonName.innerHTML = pokemonData.name;
+    pokemonName.className = 'pkmnName';
+    let pokemonImage = document.createElement("img");
+    pokemonImage.src = pokemonData.sprites.front_default;
+    pokemonImage.className = 'pkmImg';
+    let pokemonTypeList = document.createElement("ul");
+    pokemonTypeList.classList.add("pokemon-types");
+    pokemonData.types.forEach((type) => {
+        let pokemonType = document.createElement("li");
+        pokemonType.innerHTML = type.type.name;
+        pokemonTypeList.appendChild(pokemonType);
+    });
+    pokemonTypeList.className = 'typeList';
+    pokemonCard.appendChild(pokemonName);
+    pokemonCard.appendChild(pokemonImage);
+    pokemonCard.appendChild(pokemonTypeList);
+    pokeCard.appendChild(pokemonCard);
+}
 fetch(urlPkmtype)
     .then(response => response.json())
     .then(data => {
@@ -174,6 +198,13 @@ fetch(urlPkmtype)
                 .then(res => {
                 console.log(res);
                 pokeCard.innerHTML = "";
+                res.pokemon.forEach((pokemon) => {
+                    fetch(pokemon.pokemon.url)
+                        .then(response => response.json())
+                        .then(pokemonData => {
+                        pokeCard.appendChild(renderPokemonCard(pokemonData));
+                    });
+                });
             });
         });
     });

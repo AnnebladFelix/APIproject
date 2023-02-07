@@ -1,11 +1,11 @@
 const urlFirstGen = 'https://pokeapi.co/api/v2/pokemon?limit=151&generation=1'; //?limit=151
 const urlPkmn = 'https://pokeapi.co/api/v2/pokemon/';
 const urlMny = 'https://pokeapi.co/api/v2/'; 
-const urlPkmtype = 'https://pokeapi.co/api/v2/type/'
+const urlPkmtype = 'https://pokeapi.co/api/v2/type/' // all pokemon types and the pokemons under the type.
 
 const searchBarInput = document.querySelector('#search-bar') as HTMLInputElement;
 const searchBtn = document.querySelector('#search-btn') as HTMLButtonElement;
-let pokeinfo = document.querySelector('#info-box') as HTMLElement;   
+let pokeInfo = document.querySelector('#info-box') as HTMLElement;   
 let pokeCard = document.querySelector('#card-box') as HTMLElement;  
 let pokeTypes = document.querySelector('#pkmTypes') as HTMLElement;  
 
@@ -29,7 +29,7 @@ type pkmnTemplate = {
 let i = 1;
 nxtBtn.addEventListener('click', function(e){
     e.preventDefault();
-    pokeinfo.innerHTML = "";
+    pokeInfo.innerHTML = "";
     i++;
     preBtn.disabled = false;
     foo();
@@ -44,7 +44,7 @@ nxtBtn.addEventListener('click', function(e){
 // Previous button with a gray out function when i <= 0
 preBtn.addEventListener('click', function(e){
     e.preventDefault();
-    pokeinfo.innerHTML = "";
+    pokeInfo.innerHTML = "";
     foo();
     nxtBtn.disabled = false;
     if (i <= 0) {
@@ -60,7 +60,7 @@ preBtn.addEventListener('click', function(e){
 async function foo() {
     const response = await fetch(urlPkmn + i);
     const data: pkmnTemplate = await response.json();
-    pokeinfo.append(div1, info, pokeId, img)
+    pokeInfo.append(div1, info, pokeId, img)
     info.innerHTML = data.name;
     pokeId.innerHTML = ('id: ' + data.id);
     img.innerHTML = (`<img class="cover" src="${data.sprites['front_default']}">`);
@@ -74,7 +74,7 @@ searchBtn.addEventListener('click', async (event) =>{
         const response = await fetch(urlPkmn + searchBarInput.value);
         const data: pkmnTemplate = await response.json();
         
-        pokeinfo.append(div1, info, pokeId, img)
+        pokeInfo.append(div1, info, pokeId, img)
         info.innerHTML = data.name;
         pokeId.innerHTML = ('id: ' + data.id);
         img.innerHTML = (`<img class="cover" src="${data.sprites['front_default']}">`);
@@ -87,59 +87,75 @@ searchBtn.addEventListener('click', async (event) =>{
 
 // Function that writes out first 151 pokemons.
 function pkmnCard() {
+    // fetch data from urlFirstGen 
     fetch(urlFirstGen)
-    .then(response => response.json())
-    .then(pokemons => {
+      .then(response => response.json())
+      .then(pokemons => {
+        // destructure the response and assign the `results` property to the `pokemon` constant
         const pokemon: pkmnTemplate = pokemons.results;
         console.log(pokemon)
-        pokemon.sort((a: number, b: number) => a - b);
+        
+        // use the `map` method to loop through the `pokemon` constant and perform an action for each item in the array
         pokemon.map((poke: { url: RequestInfo | URL; }) => {
-            fetch(poke.url)
+          // fetch data from the URL provided in each pokemon object
+          fetch(poke.url)
             .then(response => response.json())
             .then(pokemon => {
-               
-                const title = document.createElement('h1');
-                title.innerText = pokemon.name;
-                document.body.appendChild(title);
-                
-                const id = document.createElement('h2');
-                id.innerText = ('ID: ' + pokemon.id);
-                document.body.appendChild(id);
-
-                const img = document.createElement('img');
-                img.src = pokemon.sprites.front_default;
-                img.width = 96;
-                img.height = 96;
-                img.src = pokemon.sprites.front_default;
-                img.loading = "lazy";
-                document.body.appendChild(img);
-                
-                const typeList = document.createElement('ul');
-                pokemon.types.forEach((typeInfo: { type: { name: string; }; }) => {
-                  const typeItem = document.createElement('li');
-                  typeItem.innerText = typeInfo.type.name;
-                  typeList.appendChild(typeItem);
-
-                const pokeDiv = document.createElement('div');
-                pokeDiv.append(title, id, img, typeList);
-
-                });
-                document.body.appendChild(typeList);
-                pokeCard.append(title, id, img, typeList);
+              // create the title element and set its inner text to the pokemon's name
+              const title = document.createElement('h1');
+              title.className = 'pkmnName'
+              title.innerText = pokemon.name;
+              document.body.appendChild(title);
+              
+              // code to show pokemon's ID
+              // const id = document.createElement('h2');
+              // id.className = 'pkmnId'
+              // id.innerText = ('ID: ' + pokemon.id);
+              // document.body.appendChild(id);
+  
+              // create an image element and set its source URL to the front default sprite of the pokemon
+              const img = document.createElement('img');
+              img.className = 'pkmImg'
+              img.src = pokemon.sprites.front_default;
+              img.width = 96;
+              img.height = 96;
+              img.src = pokemon.sprites.front_default;
+              img.loading = "lazy";
+              document.body.appendChild(img);
+              
+              // create a list element for the pokemon's types
+              const typeList = document.createElement('ul');
+              typeList.className = 'typeList'
+              // use `forEach` to loop through the pokemon's types and add a list item for each type
+              pokemon.types.forEach((typeInfo: { type: { name: string; }; }) => {
+                const typeItem = document.createElement('li');
+                typeItem.innerText = typeInfo.type.name;
+                typeList.appendChild(typeItem);
+              });
+              document.body.appendChild(typeList);
+              
+              // create a div element and append the title, image, and type list to it
+              const pokeDiv = document.createElement('div');
+              pokeDiv.append(title, img, typeList); //need to add id into the append if id is desierd to show
+              document.body.appendChild(pokeDiv);
+              pokeDiv.className = "pokeDiv";
+              // finally, append the `pokeDiv` to the `pokeCard` element
+              pokeCard.append(pokeDiv);
             })
             .catch(error => {
-                console.error("error fetching pokemon" , error);
+              // log an error if there's a problem fetching the pokemon's information
+              console.error("error fetching pokemon" , error);
             });  
         })
-           
-    })
-    .catch(error => {
+      })
+      .catch(error => {
+        // log an error if there's a problem fetching the first generation pokemon  
         console.error("error fetching pokomen from generation 1" , error);
     });
 }
     
 pkmnCard();
-async function displayPokemon(pokemonId: string | number) {
+async function displayPokemon(pokemonId: Array<string | number>) {
     try {
       const pokemonResponse = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`);
       const pokemon = await pokemonResponse.json();
@@ -185,31 +201,74 @@ async function displayPokemon(pokemonId: string | number) {
 //meny med olika saker så som pokemon, item, berries, games, moves.
 // https://pokeapi.co/api/v2/ + menyChoise
 //function med functions i för att få upp det man väljer?
+// function to create and render pokemon cards
+function renderPokemonCard(pokemonData: { name: string; sprites: { front_default: string; }; types: { type: { name: string; }; }[]; }) {
+    // create a new div element for the pokemon card
+    let pokemonCard = document.createElement("div");
+    pokemonCard.classList.add("pokemon-card");
+    pokemonCard.className = "pokeDiv";
 
+    // create the pokemon name header
+    let pokemonName = document.createElement("h1");
+    pokemonName.innerHTML = pokemonData.name;
+    pokemonName.className = 'pkmnName'
+  
+    // create the pokemon image
+    let pokemonImage = document.createElement("img");
+    pokemonImage.src = pokemonData.sprites.front_default;
+    pokemonImage.className = 'pkmImg'
+  
+    // create the pokemon type list
+    let pokemonTypeList = document.createElement("ul");
+    pokemonTypeList.classList.add("pokemon-types");
+  
+    pokemonData.types.forEach((type: { type: { name: string; }; }) => {
+      let pokemonType = document.createElement("li");
+      pokemonType.innerHTML = type.type.name;
+      pokemonTypeList.appendChild(pokemonType);
+    });
+    pokemonTypeList.className = 'typeList'
+  
+    // append all elements to the pokemon card
+    pokemonCard.appendChild(pokemonName);
+    pokemonCard.appendChild(pokemonImage);
+    pokemonCard.appendChild(pokemonTypeList);
+  
+    // append the pokemon card to the pokemon card container
+    pokeCard.appendChild(pokemonCard);
+}
 fetch(urlPkmtype)
-    .then(response => response.json())
-    .then(data => {
-        data.results.map((type: { name: any; }) => {
-            let lbl = document.createElement('label');
-            pokeTypes.append(lbl)
-            lbl.innerHTML = (`<input class="poke-radio" type="radio" name="pkmnType" value="${type.name}"> ${type.name}`)
-        })
-    }).then(() => {
-        let pokeRadio = Array.from(document.querySelectorAll('.poke-radio'));   
-            pokeRadio.forEach(radioButton => {
-                radioButton.addEventListener('change', (event) => {
-                const selectedPkmType = event.target.value;
-                fetch(urlPkmtype + selectedPkmType)
-                .then(response => response.json())
-                .then(res => {
-                    console.log(res);
-                    //console.log(pokeCard);
-                    pokeCard.innerHTML = "";
-                })
+.then(response => response.json())
+.then(data => {
+    data.results.map((type: { name: any; }) => {
+        let lbl = document.createElement('label');
+        pokeTypes.append(lbl)
+        lbl.innerHTML = (`<input class="poke-radio" type="radio" name="pkmnType" value="${type.name}"> ${type.name}`)
+    })
+}).then(() => {
+    let pokeRadio = Array.from(document.querySelectorAll('.poke-radio'));   
+        pokeRadio.forEach(radioButton => {
+            radioButton.addEventListener('change', (event) => {
+            const selectedPkmType = event.target.value;
+            fetch(urlPkmtype + selectedPkmType)
+            .then(response => response.json())
+            .then(res => {
+                console.log(res);
+                //console.log(pokeCard);
+                pokeCard.innerHTML = "";
+                // Iterate through each pokemon of the selected type
+                res.pokemon.forEach((pokemon: { pokemon: { url: RequestInfo | URL; }; }) => {
+                    fetch(pokemon.pokemon.url)
+                    .then(response => response.json())
+                    .then(pokemonData => {
+                        // Render the pokemon card with the data
+                        pokeCard.appendChild(renderPokemonCard(pokemonData));
+                    });
+                });
             });
         });
-    }
-);  
+    });
+});  
 
 //kolla upp promise all
 //inne i radiobutton ränsa innerhtml och ersätt med det nya
