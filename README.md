@@ -8,26 +8,26 @@
 
 ## Install with cmd or terminal
 
-### ..*Clone the repository
+### *Clone the repository
 ```
 git clone https://github.com/AnnebladFelix/APIproject.git
 ```
-### ..*Go into the repository
+### *Go into the repository
 ```
 cd APIproject
 ```
-### ..*Install dependencies
+### *Install dependencies
 ```
 npm i
 ```
 
 ## Compile the project
 
-### ..*Compile the typescript
+### *Compile the typescript
 ```
 tsc
 ```
-### ..*Compile the Sass
+### *Compile the Sass
 ```
 sass src/scss:dist/css
 ```
