@@ -1,3 +1,17 @@
+@use 'colors' as *;
+*{
+    font-family: 'Press Start 2P', cursive;
+    color: $a;
+}
 h1{
+    text-transform: capitalize;
+}
+.radioLabel{
+    text-transform: capitalize;
+}
+.infoName{   
+    text-transform: capitalize;
+}
+.typeList{
     text-transform: capitalize;
 }

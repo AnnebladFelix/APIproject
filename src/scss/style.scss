@@ -1,2 +1,88 @@
 @use 'variables' as *;
 
+html{
+    border: $d .75rem solid;
+    background-color: $b;
+}
+header{
+    border-bottom: $e 5px solid;
+    margin-bottom: 5px;
+    padding-bottom: 5px;
+}
+#src-info{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+}
+#info-box{
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+.btn-div{
+    display: flex;
+    justify-content: space-around;
+    .btn-str{
+    align-self: start;
+}
+}
+
+
+#pkmTypes{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.3rem;
+.radioLabel {
+    margin: 10px;
+    border: $e 2px solid;
+    padding: .4rem;
+    background-color: $d;
+
+}
+    // .radioLabel{
+    //     display: flex;
+    //     flex-direction: row;
+    //     border: 2px $d solid;
+    //     width: fit-content;
+    //     padding: .75rem;
+    // }
+}
+
+
+
+
+input[type="radio"] {
+    display: none;
+  
+    & + label {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #ddd;
+      border-radius: 4px;
+      cursor: pointer;
+  
+      &:hover {
+        background-color: rgb(223, 0, 0);
+      }
+    }
+  
+    &:checked + label {
+      background-color: #33aaff;
+    }
+  }
+
+#card-box{
+    @include center-box;
+
+    .pokeDiv{
+        display: flex;
+        flex-direction: column;
+        border: 2px $e solid;
+        width: fit-content;
+        padding: .75rem;
+        background-color: $d;
+    }
+}
+

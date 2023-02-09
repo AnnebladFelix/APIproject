@@ -19,6 +19,7 @@ let pokeCard = document.querySelector('#card-box');
 let pokeTypes = document.querySelector('#pkmTypes');
 let div1 = document.createElement('div');
 let info = document.createElement('p');
+info.className = 'infoName';
 let img = document.createElement('div');
 let pokeId = document.createElement('p');
 let nxtBtn = document.getElementById('nxt-btn');
@@ -185,6 +186,7 @@ fetch(urlPkmtype)
     .then(data => {
     data.results.map((type) => {
         let lbl = document.createElement('label');
+        lbl.className = 'radioLabel';
         pokeTypes.append(lbl);
         lbl.innerHTML = (`<input class="poke-radio" type="radio" name="pkmnType" value="${type.name}"> ${type.name}`);
     });

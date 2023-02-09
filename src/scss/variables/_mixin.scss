@@ -1,0 +1,7 @@
+@mixin center-box {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-wrap: wrap;
+    gap: .5rem;
+}

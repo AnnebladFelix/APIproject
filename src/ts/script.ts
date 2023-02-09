@@ -11,6 +11,7 @@ let pokeTypes = document.querySelector('#pkmTypes') as HTMLElement;
 
 let div1 = document.createElement('div');
 let info = document.createElement('p');
+info.className = 'infoName';
 let img = document.createElement('div');
 let pokeId = document.createElement('p');
 
@@ -242,10 +243,12 @@ fetch(urlPkmtype)
 .then(data => {
     data.results.map((type: { name: any; }) => {
         let lbl = document.createElement('label');
+        lbl.className = 'radioLabel';
         pokeTypes.append(lbl)
         lbl.innerHTML = (`<input class="poke-radio" type="radio" name="pkmnType" value="${type.name}"> ${type.name}`)
     })
 }).then(() => {
+    //makes an array from my radiobutton
     let pokeRadio = Array.from(document.querySelectorAll('.poke-radio'));   
         pokeRadio.forEach(radioButton => {
             radioButton.addEventListener('change', (event) => {
@@ -268,7 +271,4 @@ fetch(urlPkmtype)
             });
         });
     });
-});  
-
-//kolla upp promise all
-//inne i radiobutton ränsa innerhtml och ersätt med det nya
+});

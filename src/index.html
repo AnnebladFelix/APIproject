@@ -5,28 +5,31 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../dist/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <title>PokeInfo</title>
 </head>
 <body>
     <article class="wrapper">
-        <h1>Pokemon</h1>
-        <section id="search-box">
-            <input id="search-bar" placeholder="Pokemon name or ID!">
-            <button id="search-btn">🔍</button>
+        <section id="src-info">
+            <header>
+                <img src="/src/img/pokeproject.png" alt="pokeproject">
+            </header>
+            <section id="search-box">
+                <input id="search-bar" placeholder="Pokemon name or ID!">
+                <button id="search-btn">🔍</button>
+            </section>
+            <section id="info-box"></section>
+            <div class="btn-div">
+            <button class='btn-str' id="pre-btn">‹ prev</button><button class='btn-str' id="nxt-btn">next ›</button>
+            </div>
         </section>
-        <section id="pkmTypes">
-            <label><input class="poke-radio" type="radio" name="pkmnType" value="all"> all</label>
-        </section>
-        <button id="pre-btn">‹ prev</button><button id="nxt-btn">next ›</button>
-        <section id="info-box">
-
-        </section>
-    </article>
-    
-    <section id="card-box">
-        <p></p>
-        
+    <section id="pkmTypes">
     </section>
+    <section id="card-box">
+    </section>
+    </article>
     <script src="../dist/ts/script.js" defer></script>
 </body>
 </html>
