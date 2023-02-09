@@ -9,7 +9,7 @@ https://pokeapi.co/api/v2/pokemon/ This url is for my search, next and prev butt
 
 https://pokeapi.co/api/v2/pokemon?limit=151&generation=1 This is to display the first 151 Pokemons when you load the page.
 
-==================================================================================================
+===========================================================================
 
 # How to!
 
@@ -38,7 +38,7 @@ tsc
 ``` 
 sass src/scss:dist/css
 ```
-==================================================================================================
+===========================================================================
 
 # Technologies
 
