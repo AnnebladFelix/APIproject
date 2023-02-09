@@ -1,6 +1,5 @@
 const urlFirstGen = 'https://pokeapi.co/api/v2/pokemon?limit=151&generation=1'; //?limit=151
 const urlPkmn = 'https://pokeapi.co/api/v2/pokemon/';
-const urlMny = 'https://pokeapi.co/api/v2/'; 
 const urlPkmtype = 'https://pokeapi.co/api/v2/type/' // all pokemon types and the pokemons under the type.
 
 const searchBarInput = document.querySelector('#search-bar') as HTMLInputElement;
