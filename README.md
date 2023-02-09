@@ -49,4 +49,4 @@ sass src/scss:dist/css
 - TypeScript
 
 
-## Here can you find my [Linkedin profile!](https://www.linkedin.com/in/felix-anneblad-608522160/)
+## Here you can find my [Linkedin profile!](https://www.linkedin.com/in/felix-anneblad-608522160/)
