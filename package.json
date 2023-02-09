@@ -1,0 +1,19 @@
+{
+  "name": "pokeapi",
+  "version": "1.0.0",
+  "description": "pokeapi project with search and sort functions",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnnebladFelix/textAPIproject.git"
+  },
+  "author": "Felix Anneblad",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AnnebladFelix/textAPIproject/issues"
+  },
+  "homepage": "https://github.com/AnnebladFelix/textAPIproject#readme"
+}
