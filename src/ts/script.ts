@@ -161,7 +161,8 @@ async function displayPokemon(pokemonId: Array<string | number>) {
       const pokemon = await pokemonResponse.json();
       const pokemonDetailsResponse = await fetch(pokemon.url);
       const pokemonDetails = await pokemonDetailsResponse.json();
-      // We then make a GET request to the URL for each type of the pokemon, using Promise.all to wait for all of the requests to complete.
+      // We then make a request to the URL for each type of the pokemon, using Promise.all to wait for all of the requests to complete.
+      //with the first map function i take url and every type object will become an url and in the second map i take the url and make it into a jason response.
       const typeDetailsResponses = await Promise.all(pokemonDetails.types.map((type: { type: { url: RequestInfo | URL; }; }) => fetch(type.type.url)));
       const typeDetails = await Promise.all(typeDetailsResponses.map(res => res.json()));
       // Next, we create an h1 element with the name of the pokemon.
@@ -173,11 +174,11 @@ async function displayPokemon(pokemonId: Array<string | number>) {
       const img = document.createElement('img');
       img.width = 96;
       img.height = 96;
-      img.style.objectFit = "cover";
-      img.style.display = "block";
-      img.style.width = "100%";
-      img.style.height = "auto";
-      img.style.margin = "16px 0";
+    //   img.style.objectFit = "cover";
+    //   img.style.display = "block";
+    //   img.style.width = "100%";
+    //   img.style.height = "auto";
+    //   img.style.margin = "16px 0";
       img.src = pokemonDetails.sprites.front_default;
       img.loading = "lazy";
       // We append the img element to the body of the document.
