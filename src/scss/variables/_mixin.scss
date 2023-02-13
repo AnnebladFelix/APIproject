@@ -1,7 +1,13 @@
+@use 'colors' as *;
+
 @mixin center-box {
     display: flex;
     justify-content: center;
-    align-content: center;
-    flex-wrap: wrap;
-    gap: .5rem;
+    align-items: center;
+}
+
+@mixin red-bottom {
+    border-bottom: $e 5px solid;
+    margin-bottom: 5px;
+    padding-bottom: 5px;
 }

@@ -25,6 +25,17 @@ type pkmnTemplate = {
     sprites:  { [key: string]: string }, // This type definition specifies that the sprites property is an object that maps strings to strings.
 }
 
+// Function that writes out one pokemon and changes when a button is pressed.
+async function foo() {
+    const response = await fetch(urlPkmn + i);
+    const data: pkmnTemplate = await response.json();
+    pokeInfo.append(div1, info, pokeId, img)
+    info.innerHTML = data.name;
+    pokeId.innerHTML = ('id: ' + data.id);
+    img.innerHTML = (`<img class="cover" src="${data.sprites['front_default']}">`);
+}
+foo();
+
 // Next button with a gray out function when i >= 151
 let i = 1;
 nxtBtn.addEventListener('click', function(e){
@@ -56,20 +67,9 @@ preBtn.addEventListener('click', function(e){
     }
 })
 
-// Function that writes out one pokemon and changes when a button is pressed.
-async function foo() {
-    const response = await fetch(urlPkmn + i);
-    const data: pkmnTemplate = await response.json();
-    pokeInfo.append(div1, info, pokeId, img)
-    info.innerHTML = data.name;
-    pokeId.innerHTML = ('id: ' + data.id);
-    img.innerHTML = (`<img class="cover" src="${data.sprites['front_default']}">`);
-}
-foo();
-
 //function that listens after search and outputs it in info-box
-searchBtn.addEventListener('click', async (event) =>{
-    event.preventDefault();
+searchBtn.addEventListener('click', async (e) =>{
+    e.preventDefault();
     try {
         const response = await fetch(urlPkmn + searchBarInput.value);
         const data: pkmnTemplate = await response.json();
@@ -174,11 +174,6 @@ async function displayPokemon(pokemonId: Array<string | number>) {
       const img = document.createElement('img');
       img.width = 96;
       img.height = 96;
-    //   img.style.objectFit = "cover";
-    //   img.style.display = "block";
-    //   img.style.width = "100%";
-    //   img.style.height = "auto";
-    //   img.style.margin = "16px 0";
       img.src = pokemonDetails.sprites.front_default;
       img.loading = "lazy";
       // We append the img element to the body of the document.
@@ -242,16 +237,33 @@ fetch(urlPkmtype)
 .then(response => response.json())
 .then(data => {
     data.results.map((type: { name: any; }) => {
+        let radioDiv = document.createElement('div');
+        radioDiv.className = 'radioDiv';
         let lbl = document.createElement('label');
         lbl.className = 'radioLabel';
-        pokeTypes.append(lbl)
+        radioDiv.append(lbl);
+        pokeTypes.append(radioDiv);
         lbl.innerHTML = (`<input class="poke-radio" type="radio" name="pkmnType" value="${type.name}"> ${type.name}`)
-    })
-}).then(() => {
+    });
+
+    // add event listeners to the radio buttons
+    const radioButtons = document.querySelectorAll('.poke-radio');
+    radioButtons.forEach(radioButton => {
+        radioButton.addEventListener('click', () => {
+            // remove the "checked" class from all radio buttons
+            radioButtons.forEach(rb => {
+                rb.parentElement!.classList.remove('checked');
+            });
+            // add the "checked" class to the parent label of the selected radio button
+            radioButton.parentElement!.classList.add('checked');
+        });
+    });
+  }).then(() => {
     //makes an array from my radiobutton
     let pokeRadio = Array.from(document.querySelectorAll('.poke-radio'));   
         pokeRadio.forEach(radioButton => {
             radioButton.addEventListener('change', (event) => {
+                //event.preventDefault();
             const selectedPkmType = event.target.value;
             fetch(urlPkmtype + selectedPkmType)
             .then(response => response.json())
