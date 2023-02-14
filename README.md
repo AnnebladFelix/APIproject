@@ -38,6 +38,12 @@ tsc
 ``` 
 sass src/scss:dist/css
 ```
+
+## Run the project
+
+```
+npm run start
+```
 ===========================================================================
 
 # Technologies
@@ -48,5 +54,6 @@ sass src/scss:dist/css
 
 - TypeScript
 
-
-## Here you can find my [Linkedin profile!](https://www.linkedin.com/in/felix-anneblad-608522160/)
+## Follow me here!
+- [Linkedin profile!](https://www.linkedin.com/in/felix-anneblad-608522160/)
+- [GitHub @AnnebladFelix](https://github.com/AnnebladFelix)

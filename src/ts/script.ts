@@ -7,16 +7,37 @@ const searchBtn = document.querySelector('#search-btn') as HTMLButtonElement;
 let pokeInfo = document.querySelector('#info-box') as HTMLElement;   
 let pokeCard = document.querySelector('#card-box') as HTMLElement;  
 let pokeTypes = document.querySelector('#pkmTypes') as HTMLElement;  
-
 let div1 = document.createElement('div');
 let info = document.createElement('p');
 info.className = 'infoName';
 let img = document.createElement('div');
 let pokeId = document.createElement('p');
-
 let nxtBtn = <HTMLButtonElement> document.getElementById('nxt-btn')!;
 let preBtn = <HTMLButtonElement> document.getElementById('pre-btn')!;
+//All the colors for the pokeomn types
+const colors = {
+    fire: "#f08030",
+    grass: "#78c850",
+    electric: "#f8d030",
+    ice: '#98d8d8',
+    water: "#6890f0",
+    ground: "#e0c068",
+    rock: "#b8a038",
+    fairy: "#ffaec9",
+    poison: "#a040a0",
+    bug: "#a8b820",
+    dragon: "#7038f8",
+    psychic: "#f85888",
+    flying: "#a890f0",
+    fighting: "#c03028",
+    normal: '#a8a878',
+    dark: '#705848',
+    ghost: '#705898',
+    steel: '#b8b8d0',
+  }
+const main_types = Object.keys(colors);
 
+//typing up my pokemons
 type pkmnTemplate = {
     [x: string]: any;
     name: string,
@@ -139,6 +160,11 @@ function pkmnCard() {
               pokeDiv.append(title, img, typeList); //need to add id into the append if id is desierd to show
               document.body.appendChild(pokeDiv);
               pokeDiv.className = "pokeDiv";
+              const poke_types = pokemon.types.map((type: { type: { name: any; }; }) => type.type.name)
+              const type = main_types.find((type) => poke_types.indexOf(type) > -1)
+              const color = colors[type];
+              // background is dependent on type
+              pokeDiv.style.backgroundColor = color
               // finally, append the `pokeDiv` to the `pokeCard` element
               pokeCard.append(pokeDiv);
             })
@@ -153,7 +179,6 @@ function pkmnCard() {
         console.error("error fetching pokomen from generation 1" , error);
     });
 }
-    
 pkmnCard();
 async function displayPokemon(pokemonId: Array<string | number>) {
     try {
@@ -194,9 +219,6 @@ async function displayPokemon(pokemonId: Array<string | number>) {
       console.error(error);
     }
 }
-//meny med olika saker så som pokemon, item, berries, games, moves.
-// https://pokeapi.co/api/v2/ + menyChoise
-//function med functions i för att få upp det man väljer?
 // function to create and render pokemon cards
 function renderPokemonCard(pokemonData: { name: string; sprites: { front_default: string; }; types: { type: { name: string; }; }[]; }) {
     // create a new div element for the pokemon card
@@ -225,14 +247,16 @@ function renderPokemonCard(pokemonData: { name: string; sprites: { front_default
     });
     pokemonTypeList.className = 'typeList'
   
-    // append all elements to the pokemon card
+    // append all elements to the pokemonCard
     pokemonCard.appendChild(pokemonName);
     pokemonCard.appendChild(pokemonImage);
     pokemonCard.appendChild(pokemonTypeList);
   
     // append the pokemon card to the pokemon card container
     pokeCard.appendChild(pokemonCard);
+    return pokemonCard;
 }
+//Menu with radiobuttons that changes to buttons. When pressed they change color.
 fetch(urlPkmtype)
 .then(response => response.json())
 .then(data => {
@@ -245,7 +269,6 @@ fetch(urlPkmtype)
         pokeTypes.append(radioDiv);
         lbl.innerHTML = (`<input class="poke-radio" type="radio" name="pkmnType" value="${type.name}"> ${type.name}`)
     });
-
     // add event listeners to the radio buttons
     const radioButtons = document.querySelectorAll('.poke-radio');
     radioButtons.forEach(radioButton => {
@@ -264,23 +287,22 @@ fetch(urlPkmtype)
         pokeRadio.forEach(radioButton => {
             radioButton.addEventListener('change', (event) => {
                 //event.preventDefault();
-            const selectedPkmType = event.target.value;
-            fetch(urlPkmtype + selectedPkmType)
-            .then(response => response.json())
-            .then(res => {
-                console.log(res);
-                //console.log(pokeCard);
-                pokeCard.innerHTML = "";
-                // Iterate through each pokemon of the selected type
-                res.pokemon.forEach((pokemon: { pokemon: { url: RequestInfo | URL; }; }) => {
-                    fetch(pokemon.pokemon.url)
+                if (event.target instanceof HTMLInputElement) {
+                    const selectedPkmType = event.target.value;
+                    fetch(urlPkmtype + selectedPkmType)
                     .then(response => response.json())
-                    .then(pokemonData => {
-                        // Render the pokemon card with the data
-                        pokeCard.appendChild(renderPokemonCard(pokemonData));
+                    .then(res => {
+                        console.log(res);
+                        pokeCard.innerHTML = "";
+                        res.pokemon.forEach((pokemon: { pokemon: { url: RequestInfo | URL; }; }) => {
+                        fetch(pokemon.pokemon.url)
+                        .then(response => response.json())
+                        .then(pokemonData => {
+                            pokeCard.appendChild(renderPokemonCard(pokemonData));
+                        });
                     });
                 });
-            });
+            }
         });
     });
 });
